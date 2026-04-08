@@ -1,0 +1,13 @@
+class Solution:
+    def findDuplicate(self, nums: List[int]) -> int:
+        
+
+        ### Bruteforce ###
+        hashset = set()
+
+        for i in nums:
+
+            if i in hashset:
+                return i
+            hashset.add(i)
+        
