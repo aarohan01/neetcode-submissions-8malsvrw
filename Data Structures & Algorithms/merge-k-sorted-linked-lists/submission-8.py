@@ -1,0 +1,156 @@
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+
+class Solution:    
+    def mergeKLists(self, lists: List[Optional[ListNode]]) -> Optional[ListNode]:
+        
+        ### Bruteforce ###
+        # Traverse all the linked list and put it in an array
+        # Sort the array and recreate a linked list
+        # Time: O(NlogN)  --> Where N is the total number of nodes
+        # Space: O(N)
+        '''
+        res = []
+
+        def traverse( link: list ) -> None:
+
+            if not link:
+                return None
+
+            cur = link
+            while cur:
+                res.append(cur.val)
+                cur = cur.next
+        
+        if not lists:
+            return None
+
+        for l in lists:
+            traverse(l)
+
+
+        res.sort()
+
+        dummy = ListNode()
+        cur = dummy 
+
+        for i in res:
+            node = ListNode(i)
+            cur.next = node
+            cur = cur.next
+        
+        return dummy.next
+        '''
+
+        ### Merge One by One - Memory Efficient Solution ###
+        # 
+        """
+        if not lists or len(lists) <= 1:
+            return 
+        
+        def mergeLists(list1: Optional[ListNode], list2: Optional[ListNode]) -> Optional[ListNode]:
+
+            cur1, cur2 = list1, list2
+            
+            dummy = ListNode()
+            cur = dummy
+
+            while cur1 and cur2:
+                
+                if cur1.val <= cur2.val:
+                    cur.next = cur1
+                    cur1 = cur1.next
+                else:
+                    cur.next = cur2
+                    cur2 = cur2.next
+                
+                cur = cur.next
+            
+            if cur1:
+                cur.next = cur1
+            else:
+                cur.next = cur2
+            
+            return dummy.next
+
+        
+        head = mergeLists(lists[0], lists[1])
+        for i in range(2,len(lists)):
+            head = mergeLists(head, lists[i])
+
+        return head
+        
+
+        #OR
+        '''
+        for i in range(1,len(lists)):
+            lists[i] = mergeLists(lists[i-1], lists[i])
+
+        return lists[i]
+        '''
+    
+        """
+
+        ### Optimal - Divide and Conquer merger ###
+        ### NOTE since the lists array contains LinkedList its actually only holding heads not entire LL, so if k LL's then size of list is O(k) ###
+        # Thus the tree size will be logk to split 
+        # but merging we visit all nodes at each level
+        # Nlogk
+        # logk -> recursion 
+        def divide(s, e):
+
+            if s == e:
+                return lists[s]
+            
+            m = (s+e)//2
+
+            left = divide(s,m)
+            right = divide(m+1,e)
+
+            return mergeLists(left,right)
+
+        def mergeLists(list1: Optional[ListNode], list2: Optional[ListNode]) -> Optional[ListNode]:
+
+            cur1, cur2 = list1, list2
+            
+            dummy = ListNode()
+            cur = dummy
+
+            while cur1 and cur2:
+                
+                if cur1.val <= cur2.val:
+                    cur.next = cur1
+                    cur1 = cur1.next
+                else:
+                    cur.next = cur2
+                    cur2 = cur2.next
+                
+                cur = cur.next
+            
+            if cur1:
+                cur.next = cur1
+            else:
+                cur.next = cur2
+            
+            return dummy.next
+
+
+        ## Edge cases ##
+        if not lists:
+            return 
+
+        if len(lists) == 1:
+            return lists[0]
+
+        #head = ListNode()
+
+        return divide(0,len(lists)-1)
+
+
+        
+        
+
+            
